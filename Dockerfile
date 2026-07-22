@@ -1,14 +1,12 @@
-# Java 17 공식 최신 이미지 사용
-FROM eclipse-temurin:17-jdk-alpine
-
-# 작업 디렉토리 설정
+# 1단계: 빌드 환경 (Gradle로 jar 생성)
+FROM gradle:7.6-jdk17 AS builder
 WORKDIR /app
+COPY . .
+RUN ./gradlew build -x test --no-daemon
 
-# 빌드된 jar 파일 복사
-COPY build/libs/*.jar app.jar
-
-# 8080 포트 개방
+# 2단계: 실행 환경
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar app.jar
 EXPOSE 8080
-
-# 앱 실행
 ENTRYPOINT ["java", "-jar", "app.jar"]
