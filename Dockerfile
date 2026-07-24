@@ -1,5 +1,5 @@
-# 1단계: 빌드 환경
-FROM gradle:7.6-jdk17 AS builder
+# 1단계: 빌드 환경 (Gradle 8.5로 변경)
+FROM gradle:8.5-jdk17 AS builder
 WORKDIR /app
 COPY . .
 RUN gradle build -x test --no-daemon
